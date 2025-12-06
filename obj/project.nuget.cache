@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "kC52gLRO9rOYI6lZo14WLUTa+bZYFmur0fJMJNjxs3DjkP1NT9eZ9SOqf90Ft44poo//ouQKgsTXb1DUdjq1RQ==",
+  "success": true,
+  "projectFilePath": "/home/anwhy/Project/MVC_1/MVC_1.csproj",
+  "expectedPackageFiles": [
+    "/home/anwhy/.nuget/packages/microsoft.entityframeworkcore/8.0.4/microsoft.entityframeworkcore.8.0.4.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.entityframeworkcore.abstractions/8.0.4/microsoft.entityframeworkcore.abstractions.8.0.4.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.entityframeworkcore.analyzers/8.0.4/microsoft.entityframeworkcore.analyzers.8.0.4.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.entityframeworkcore.relational/8.0.4/microsoft.entityframeworkcore.relational.8.0.4.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.caching.abstractions/8.0.0/microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.caching.memory/8.0.0/microsoft.extensions.caching.memory.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.configuration.abstractions/8.0.0/microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.dependencyinjection/8.0.0/microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.logging/8.0.0/microsoft.extensions.logging.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.0/microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.options/8.0.0/microsoft.extensions.options.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/npgsql/8.0.3/npgsql.8.0.3.nupkg.sha512",
+    "/home/anwhy/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.4/npgsql.entityframeworkcore.postgresql.8.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}
