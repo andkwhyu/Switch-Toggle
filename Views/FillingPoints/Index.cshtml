@@ -52,36 +52,68 @@
 </div>
 
 <!-- Tables -->
-<div class="card-body">
-        <table id="myTable" class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Filling Bay</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null)
+    <div class="card-body">
+
+        <div class="d-flex justify-content-end mb-2">
+            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
+                <i class="fas fa-plus"></i> Add Data
+            </a>
+        </div>
+
+        @if (TempData["success"] != null)
         {
-            foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.id</td>
-                    <td>@item.fillingbay</td>
-                    <td>@(item.statusfilling ? "ON" : "OFF")</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr><td colspan="2">Data Not Available</td></tr>
+            <script>
+                alert('@TempData["success"]');
+            </script>
         }
 
-    </tbody>
-</table>
+        @if (TempData["error"] != null)
+        {
+            <script>
+                alert('@TempData["error"]');
+            </script>
+        }
 
- @section Scripts {
+        <div class="card">
+            <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 150px">Action</th>
+                        <th>Filling Bay</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 150px">
+                                    <button type="button" class="btn btn-secondary">
+                                        <i class="nav-icon fas fa-edit fa-1x"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteData(@item.id, '@item.fillingbay')">
+                                    <i class="nav-icon fas fa-trash fa-1x"></i>
+                                    </button>
+
+                                </td>
+                                <td>@item.fillingbay</td>
+                                <td>@(item.statusfilling ? "ON" : "OFF")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="3">Data Not Available</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+@section Scripts {
+
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable();
@@ -89,4 +121,51 @@
 </script>
 }
 
+<script>
+    function deleteData(id, fillingbay) {
+        if (confirm("Are you sure delete " + fillingbay + "?")) {
+            window.location.href = '/FillingPoints/Delete/' + id;
+        }
+    }
+</script>
+
+
+</div>
+
+@* Modal Add Data *@
+<div class="modal fade" id="inputModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Input Data Filling Bay</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Filling Bay</label>
+                        <input type="text" name="fillingbay" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="statusfilling" class="form-control">
+                            <option value="true">ON</option>
+                            <option value="false">OFF</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
 </div>
