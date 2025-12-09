@@ -38,6 +38,46 @@
     color: #f1c40f; /* kuning terang */
 }
 
+/* Light mode */
+.main-sidebar.sidebar-light-primary .nav-link {
+  color: #000 !important;
+}
+
+/* Dark mode */
+body.dark-mode .main-sidebar.sidebar-dark-primary .nav-link {
+  color: #fff !important;
+}
+
+.nav-sidebar .nav-link {
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+
+.nav-sidebar .nav-icon {
+  margin-right: 10px;
+}
+
+/* Saat sidebar collapse, center-kan icon user di brand-link */
+.sidebar-mini.sidebar-collapse .brand-link {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 48px !important;
+  padding: 0 !important;
+}
+
+/* Sembunyikan teks AdminLTE saat collapse */
+.sidebar-mini.sidebar-collapse .brand-link .brand-text {
+  display: none !important;
+}
+
+/* Pastikan icon user center dan proporsional */
+.sidebar-mini.sidebar-collapse .brand-link i {
+  font-size: 22px !important;
+  margin: 0 !important;
+  text-align: left;
+}
+
 </style>
 
 
@@ -64,13 +104,13 @@
     </nav>
 </div>
     <!-- Sidebar -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-light-primary elevation-4">
     <div class="sidebar d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column text-center" data-widget="treeview" role="menu">
                 <li class="nav-item mb-4">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-user fa-2x"></i>
+                    <a href="/" class="brand-link text-center">
+                        <i class="fas fa-user"></i>
                         <span class="brand-text font-weight-light">AdminLTE</span>
                     </a>
                 </li>
@@ -109,7 +149,7 @@
 
     <!-- Footer -->
     <footer class="main-footer text-center">
-        <strong>AdminLTE + ASP.NET Core</strong>
+        <strong>IzzYIzzY</strong>
     </footer>
 
 </div>
@@ -119,20 +159,47 @@
 <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars/js/OverlayScrollbars.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
+
+<!-- DataTables JS & CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 @RenderSection("Scripts", required: false)
+
 </body>
 </html>
 
 
 <script>
-  function toggleDarkMode() {
+function toggleDarkMode() {
   document.body.classList.toggle("dark-mode");
 
   const isDark = document.body.classList.contains("dark-mode");
   const icon = document.getElementById("modeIcon");
+  const navbar = document.querySelector(".main-header");
+  const sidebar = document.querySelector(".main-sidebar");
 
+  // Icon toggle
   icon.classList.remove("fa-moon", "fa-sun");
   icon.classList.add(isDark ? "fa-sun" : "fa-moon");
+
+  // Navbar switch
+  if (isDark) {
+    navbar.classList.remove("navbar-light", "bg-light");
+    navbar.classList.add("navbar-dark", "bg-dark");
+  } else {
+    navbar.classList.remove("navbar-dark", "bg-dark");
+    navbar.classList.add("navbar-light", "bg-light");
+  }
+
+  // Sidebar switch
+  if (isDark) {
+    sidebar.classList.remove("sidebar-light-primary");
+    sidebar.classList.add("sidebar-dark-primary");
+  } else {
+    sidebar.classList.remove("sidebar-dark-primary");
+    sidebar.classList.add("sidebar-light-primary");
+  }
 
   localStorage.setItem("theme", isDark ? "dark" : "light");
 }
@@ -140,16 +207,29 @@
 window.onload = function () {
   const savedTheme = localStorage.getItem("theme");
   const icon = document.getElementById("modeIcon");
+  const navbar = document.querySelector(".main-header");
+  const sidebar = document.querySelector(".main-sidebar");
 
   if (savedTheme === "dark") {
     document.body.classList.add("dark-mode");
     icon.classList.remove("fa-moon");
     icon.classList.add("fa-sun");
     document.getElementById("darkModeToggle").checked = true;
+
+    navbar.classList.remove("navbar-light", "bg-light");
+    navbar.classList.add("navbar-dark", "bg-dark");
+
+    sidebar.classList.remove("sidebar-light-primary");
+    sidebar.classList.add("sidebar-dark-primary");
+  } else {
+    navbar.classList.remove("navbar-dark", "bg-dark");
+    navbar.classList.add("navbar-light", "bg-light");
+
+    sidebar.classList.remove("sidebar-dark-primary");
+    sidebar.classList.add("sidebar-light-primary");
   }
 };
 </script>
-
 
 
 

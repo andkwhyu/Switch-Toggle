@@ -13,12 +13,12 @@ public class FillingPointsController : Controller
 
     public IActionResult Index()
     {
-       var data = _db.fillingpoints
-        .OrderBy(x => x.id)
-        .ToList();
-         return View(data);
-
+        var data = _db.fillingpoints
+            .OrderBy(x => x.id)
+            .ToList();
+        return View(data);
     }
+
 
     [HttpPost]
     public IActionResult Create(FillingPoints model)
@@ -47,6 +47,7 @@ public class FillingPointsController : Controller
             return RedirectToAction("Index");
         }
 
+        TempData["refresh"] = true;
         return RedirectToAction("Index");
         
     }
@@ -117,24 +118,31 @@ public class FillingPointsController : Controller
         return Ok();
     }
 
-
-
-
+    [HttpPost]
     public IActionResult Delete(int id)
     {
-        var data = _db.fillingpoints.FirstOrDefault(x => x.id == id);
-
+        var data = _db.fillingpoints.Find(id);
         if (data == null)
-        {
-            TempData["error"] = "Data Not Found!";
-            return RedirectToAction("Index");
-        }
+            return Json(new { success = false });
 
         _db.fillingpoints.Remove(data);
         _db.SaveChanges();
 
-        TempData["success"] = $"Data {data.fillingbay} Deleted";
-        return RedirectToAction("Index");
+        return Json(new { success = true });
     }
 
+    [HttpGet]
+    public IActionResult GetDashboardCounts()
+    {
+        var total = _db.fillingpoints.Count();
+        var on = _db.fillingpoints.Count(fp => fp.statusfilling == true);
+        var off = _db.fillingpoints.Count(fp => fp.statusfilling == false);
+
+        return Json(new {
+            totalPoint = total,
+            statusOn = on,
+            statusOff = off
+        });
+    }
+    
 }

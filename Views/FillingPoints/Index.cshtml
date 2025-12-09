@@ -2,7 +2,7 @@
 
 <!-- Small boxes (Stat box) -->
 <div class="row">
-    <div class="col-lg-3 col-6">
+    @* <div class="col-lg-3 col-6">
         <div class="small-box bg-info" style="margin-top: 55px;">
             <div class="inner">
                 <h3>150</h3>
@@ -12,28 +12,22 @@
                 <i class="fas fa-shopping-cart"></i>
             </div>
         </div>
-    </div>
+    </div> *@
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-success" style="margin-top: 55px;">
+        <div class="small-box bg-info" style="margin-top: 55px;">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-                <p>Bounce Rate</p>
-            </div>
-            <div class="icon" style="top: 18px;">
-                <i class="fas fa-chart-line"></i>
+                <h3 id ="totalPoint">@ViewBag.TotalPoint</h3>
+                <p>Total Filling Point</p>
             </div>
         </div>
     </div>
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-warning" style="margin-top: 55px;">
+        <div class="small-box bg-success" style="margin-top: 55px;">
             <div class="inner">
-                <h3>44</h3>
-                <p>User Registrations</p>
-            </div>
-            <div class="icon" style="top: 18px;">
-                <i class="fas fa-user-plus"></i>
+                <h3 id ="statusOn">@ViewBag.StatusOn</h3>
+                <p>Status ON</p>
             </div>
         </div>
     </div>
@@ -41,11 +35,8 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-danger" style="margin-top: 55px;">
             <div class="inner">
-                <h3>65</h3>
-                <p>Unique Visitors</p>
-            </div>
-            <div class="icon" style="top: 18px;">
-                <i class="fas fa-users"></i>
+                <h3 id ="statusOff">@ViewBag.StatusOff</h3>
+                <p>Status OFF</p>
             </div>
         </div>
     </div>
@@ -71,6 +62,13 @@
         {
             <script>
                 alert('@TempData["error"]');
+            </script>
+        }
+
+        @if (TempData["refresh"] != null)
+        {
+            <script>
+                refreshDashboard();
             </script>
         }
 
@@ -122,59 +120,78 @@
     </div>
 
 @section Scripts {
-
-@* DatadariDatabase *@
 <script>
     $(document).ready(function () {
-        $('#myTable').DataTable();
-        "Ordering": false
+        $('#myTable').DataTable({
+            searching: false,
+            paging: true,
+            info: false,
+            lengthChange: true
+        });
     });
-</script>
-}
 
-@* DeleteData *@
-<script>
     function deleteData(id, fillingbay) {
         if (confirm("Are you sure delete " + fillingbay + "?")) {
-            window.location.href = '/FillingPoints/Delete/' + id;
+
+            fetch('/FillingPoints/Delete/' + id, { method: 'POST' })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+
+                        // Hapus row dari DataTables
+                        const table = $('#myTable').DataTable();
+                        const row = $(`button[onclick="deleteData(${id}, '${fillingbay}')"]`).closest('tr');
+                        table.row(row).remove().draw();
+
+                        // Update angka dashboard
+                        refreshDashboard();
+
+                        alert("Data " +fillingbay+ " Deleted!");
+                    }
+                })
+                .catch(err => console.log("DELETE ERROR:", err));
         }
     }
-</script>
 
-@* UpdateData *@
-<script>
-function openEditModal(id, fillingbay) {
+    function openEditModal(id, fillingbay) {
+        document.getElementById("editId").value = id;
+        document.getElementById("editFillingBay").value = fillingbay;
+        var modal = new bootstrap.Modal(document.getElementById('editModal'));
+        modal.show();
+    }
 
-    document.getElementById("editId").value = id;
-    document.getElementById("editFillingBay").value = fillingbay;
+    function toggleStatus(checkbox, id) {
+        const status = checkbox.checked;
+        const label = checkbox.nextElementSibling.querySelector('.text');
+        label.textContent = status ? "ON" : "OFF";
 
-    var modal = new bootstrap.Modal(document.getElementById('editModal'));
-    modal.show();
-}
+        fetch('/FillingPoints/UpdateStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, statusfilling: status })
+        }).then(() => refreshDashboard());
+    }
 
-@* UpdateStatus *@
-function toggleStatus(checkbox, id) {
-    const status = checkbox.checked;
-
-    // Ubah teks ON/OFF
-    const label = checkbox.nextElementSibling.querySelector('.text');
-    label.textContent = status ? "ON" : "OFF";
-
-    // Kirim ke backend
-    fetch('/FillingPoints/UpdateStatus', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            id: id,
-            statusfilling: status
-        })
+    function refreshDashboard() {
+        $.ajax({
+            url: '/FillingPoints/GetDashboardCounts',
+            method: 'GET',
+            success: function (data) {
+                console.log("DATA:", data);
+                $('#totalPoint').text(data.totalPoint);
+                $('#statusOn').text(data.statusOn);
+                $('#statusOff').text(data.statusOff);
+            },
+            error: function (xhr) {
+                console.log("AJAX ERROR:", xhr.responseText);
+            }
+        });
+    }
+    $(function () {
+        refreshDashboard();
     });
-}
 </script>
-
-
-
-</div>
+}
 
 @* Modal Add Data *@
 <div class="modal fade" id="inputModal" tabindex="-1" aria-hidden="true">
@@ -265,7 +282,7 @@ function toggleStatus(checkbox, id) {
     right: 0; bottom: 0;
     background-color: red;
     border-radius: 34px;
-    transition: .4s;
+    transition: .1s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -279,7 +296,7 @@ function toggleStatus(checkbox, id) {
     height: 28px;
     background-color: white;
     border-radius: 50%;
-    transition: .4s;
+    transition: .1s ease-in-out;
     position: absolute;
     top: 4px;
     left: 4px;
@@ -287,7 +304,7 @@ function toggleStatus(checkbox, id) {
 
 .status-toggle input:checked + .slider {
     background-color: green;
-    justify-content: flex-start; /* teks pindah ke kiri */
+    justify-content: flex-start;
 }
 
 .status-toggle input:checked + .slider .circle {
