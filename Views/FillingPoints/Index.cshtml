@@ -3,48 +3,48 @@
 <!-- Small boxes (Stat box) -->
 <div class="row">
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-info">
+        <div class="small-box bg-info" style="margin-top: 55px;">
             <div class="inner">
                 <h3>150</h3>
                 <p>New Orders</p>
             </div>
-            <div class="icon">
+            <div class="icon" style="top: 18px;">
                 <i class="fas fa-shopping-cart"></i>
             </div>
         </div>
     </div>
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-success">
+        <div class="small-box bg-success" style="margin-top: 55px;">
             <div class="inner">
                 <h3>53<sup style="font-size: 20px">%</sup></h3>
                 <p>Bounce Rate</p>
             </div>
-            <div class="icon">
+            <div class="icon" style="top: 18px;">
                 <i class="fas fa-chart-line"></i>
             </div>
         </div>
     </div>
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-warning">
+        <div class="small-box bg-warning" style="margin-top: 55px;">
             <div class="inner">
                 <h3>44</h3>
                 <p>User Registrations</p>
             </div>
-            <div class="icon">
+            <div class="icon" style="top: 18px;">
                 <i class="fas fa-user-plus"></i>
             </div>
         </div>
     </div>
 
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-danger">
+        <div class="small-box bg-danger" style="margin-top: 55px;">
             <div class="inner">
                 <h3>65</h3>
                 <p>Unique Visitors</p>
             </div>
-            <div class="icon">
+            <div class="icon" style="top: 18px;">
                 <i class="fas fa-users"></i>
             </div>
         </div>
@@ -55,7 +55,7 @@
     <div class="card-body">
 
         <div class="d-flex justify-content-end mb-2">
-            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
+            <a class="btn bg-primary text-white" data-bs-toggle="modal" data-bs-target="#inputModal">
                 <i class="fas fa-plus"></i> Add Data
             </a>
         </div>
@@ -90,7 +90,8 @@
                         {
                             <tr>
                                 <td style="width: 150px">
-                                    <button type="button" class="btn btn-secondary">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="openEditModal(@item.id, '@item.fillingbay')">
                                         <i class="nav-icon fas fa-edit fa-1x"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" onclick="deleteData(@item.id, '@item.fillingbay')">
@@ -99,7 +100,14 @@
 
                                 </td>
                                 <td>@item.fillingbay</td>
-                                <td>@(item.statusfilling ? "ON" : "OFF")</td>
+                                <td>
+                                    <label class="status-toggle">
+                                        <input type="checkbox" onchange="toggleStatus(this, @item.id)" @(item.statusfilling ? "checked" : "")>
+                                        <span class="slider">
+                                            <span class="label-text">@((item.statusfilling) ? "ON" : "OFF")</span>
+                                        </span>
+                                    </label>
+                                </td>
                             </tr>
                         }
                     }
@@ -114,13 +122,16 @@
 
 @section Scripts {
 
+@* DatadariDatabase *@
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable();
+        "Ordering": false
     });
 </script>
 }
 
+@* DeleteData *@
 <script>
     function deleteData(id, fillingbay) {
         if (confirm("Are you sure delete " + fillingbay + "?")) {
@@ -128,6 +139,35 @@
         }
     }
 </script>
+
+@* UpdateData *@
+<script>
+function openEditModal(id, fillingbay) {
+
+    document.getElementById("editId").value = id;
+    document.getElementById("editFillingBay").value = fillingbay;
+
+    var modal = new bootstrap.Modal(document.getElementById('editModal'));
+    modal.show();
+}
+
+@* UpdateStatus *@
+function toggleStatus(checkbox, id) {
+    const status = checkbox.checked;
+
+    // Ubah teks di dalam toggle
+    const label = checkbox.nextElementSibling.querySelector('.label-text');
+    label.textContent = status ? "ON" : "OFF";
+
+    // Kirim ke controller
+    fetch('/FillingPoints/UpdateStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, statusfilling: status })
+    });
+}
+</script>
+
 
 
 </div>
@@ -139,7 +179,6 @@
 
             <div class="modal-header">
                 <h5 class="modal-title">Input Data Filling Bay</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <form asp-action="Create" method="post">
@@ -162,10 +201,79 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
 
         </div>
     </div>
 </div>
+
+@* modalUpdate *@
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Data</h5>
+            </div>
+
+             <form asp-action="Edit" method="post">
+                <div class="modal-body">
+
+                    <input type="hidden" id="editId" name="id">
+
+                    <div class="form-group mb-3">
+                        <label>Filling Bay</label>
+                        <input id="editFillingBay" name="fillingbay" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@* CSS-Status *@
+<style>
+.status-toggle {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 34px;
+}
+
+.status-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
+    border-radius: 34px;
+    background-color: red;
+    transition: .3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.status-toggle input:checked + .slider {
+    background-color: green;
+}
+
+.label-text {
+    z-index: 2;
+}
+</style>
