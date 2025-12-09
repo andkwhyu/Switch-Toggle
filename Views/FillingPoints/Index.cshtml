@@ -104,7 +104,8 @@
                                     <label class="status-toggle">
                                         <input type="checkbox" onchange="toggleStatus(this, @item.id)" @(item.statusfilling ? "checked" : "")>
                                         <span class="slider">
-                                            <span class="label-text">@((item.statusfilling) ? "ON" : "OFF")</span>
+                                            <span class="text">@((item.statusfilling) ? "ON" : "OFF")</span>
+                                            <span class="circle"></span>
                                         </span>
                                     </label>
                                 </td>
@@ -155,15 +156,18 @@ function openEditModal(id, fillingbay) {
 function toggleStatus(checkbox, id) {
     const status = checkbox.checked;
 
-    // Ubah teks di dalam toggle
-    const label = checkbox.nextElementSibling.querySelector('.label-text');
+    // Ubah teks ON/OFF
+    const label = checkbox.nextElementSibling.querySelector('.text');
     label.textContent = status ? "ON" : "OFF";
 
-    // Kirim ke controller
+    // Kirim ke backend
     fetch('/FillingPoints/UpdateStatus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, statusfilling: status })
+        body: JSON.stringify({
+            id: id,
+            statusfilling: status
+        })
     });
 }
 </script>
@@ -240,13 +244,13 @@ function toggleStatus(checkbox, id) {
     </div>
 </div>
 
-@* CSS-Status *@
+@* CSS-Status-Toggle *@
 <style>
 .status-toggle {
     position: relative;
     display: inline-block;
-    width: 80px;
-    height: 34px;
+    width: 90px;
+    height: 36px;
 }
 
 .status-toggle input {
@@ -259,21 +263,42 @@ function toggleStatus(checkbox, id) {
     position: absolute;
     top: 0; left: 0;
     right: 0; bottom: 0;
-    border-radius: 34px;
     background-color: red;
-    transition: .3s ease;
+    border-radius: 34px;
+    transition: .4s;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    padding: 0 10px;
     font-weight: bold;
     color: white;
 }
 
-.status-toggle input:checked + .slider {
-    background-color: green;
+.circle {
+    width: 28px;
+    height: 28px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+    position: absolute;
+    top: 4px;
+    left: 4px;
 }
 
-.label-text {
-    z-index: 2;
+.status-toggle input:checked + .slider {
+    background-color: green;
+    justify-content: flex-start; /* teks pindah ke kiri */
 }
+
+.status-toggle input:checked + .slider .circle {
+    transform: translateX(54px);
+}
+
+.text {
+    z-index: 2;
+    font-size: 14px;
+    position: relative;
+}
+
 </style>
+
