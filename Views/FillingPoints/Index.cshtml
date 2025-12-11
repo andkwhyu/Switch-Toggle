@@ -42,14 +42,32 @@
     </div>
 </div>
 
+
+<div class="card">
+  <div class="card">
+  </div>
+
 <!-- Tables -->
     <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center px-0 py-2 border-bottom" style="margin-bottom: -1px;">
+            <div class="d-flex align-items-center ms-3 gap-2">
+                <label for="customLength" class="text-white mb-0">Show</label>
+                <select id="customLength" class="form-select form-select-sm bg-dark text-white" style="width: 100px;">
+                <option value="-1">All</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                </select>
+                <span class="text-white">Items</span>
+            </div>
 
-        <div class="d-flex justify-content-end mb-2">
-            <a class="btn bg-primary text-white" data-bs-toggle="modal" data-bs-target="#inputModal">
+            <div class="me-3">
+                <a class="btn bg-primary text-white" data-bs-toggle="modal" data-bs-target="#inputModal">
                 <i class="fas fa-plus"></i> Add Data
-            </a>
-        </div>
+                </a>
+            </div>
+            </div>    
 
         @if (TempData["success"] != null)
         {
@@ -121,15 +139,18 @@
 
 @section Scripts {
 <script>
-    $(document).ready(function () {
-        $('#myTable').DataTable({
-            searching: false,
-            paging: true,
-            info: false,
-            lengthChange: true
-        });
-    });
+$(document).ready(function () {
+  var table = $('#myTable').DataTable({
+    lengthChange: false,
+    pageLength: 50,
+    searching: false
+  });
 
+$('#customLength').on('change', function () {
+  var val = parseInt($(this).val());
+  table.page.len(val).draw();
+});
+});
     function deleteData(id, fillingbay) {
         if (confirm("Are you sure delete " + fillingbay + "?")) {
 
