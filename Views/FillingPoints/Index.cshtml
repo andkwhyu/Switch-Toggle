@@ -51,7 +51,6 @@
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center px-0 py-2 border-bottom" style="margin-bottom: -1px;">
             <div class="d-flex align-items-center ms-3 gap-2">
-                <label for="customLength" class="text-white mb-0">Show</label>
                 <select id="customLength" class="form-select form-select-sm bg-dark text-white" style="width: 100px;">
                 <option value="-1">All</option>
                 <option value="5">5</option>
@@ -59,7 +58,6 @@
                 <option value="25">25</option>
                 <option value="50">50</option>
                 </select>
-                <span class="text-white">Items</span>
             </div>
 
             <div class="me-3">
@@ -337,6 +335,22 @@ $('#customLength').on('change', function () {
     font-size: 14px;
     position: relative;
 }
+
+/* Light mode */
+body:not(.dark-mode) #customLength {
+background-color: white !important;
+color: black !important;
+border-color: #ced4da !important;
+
+}
+
+/* Dark mode */
+body.dark-mode #customLength {
+  background-color: #343a40;
+  color: white;
+  border-color: #3c4b64;
+}
+
 
 </style>
 
